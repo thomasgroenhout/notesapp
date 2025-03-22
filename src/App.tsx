@@ -259,14 +259,6 @@ const ExchangeDashboard = () => {
         </div>
       </div>
       
-      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded">
-        <h3 className="font-bold mb-2">Best Trading Opportunity</h3>
-        <p><span className="font-medium">Market:</span> {bestOpportunity.type}</p>
-        <p><span className="font-medium">Spread:</span> <span className="text-green-600">${bestOpportunity.spread.toFixed(2)}</span></p>
-        <p><span className="font-medium">Bid:</span> ${bestOpportunity.bestBid.toFixed(2)} ({bestOpportunity.bestBidExchange})</p>
-        <p><span className="font-medium">Ask:</span> ${bestOpportunity.bestAsk.toFixed(2)} ({bestOpportunity.bestAskExchange})</p>
-      </div>
-      
       {renderMarketTable('Bitcoin Spot Markets', marketData.spot)}
       {renderMarketTable('Bitcoin Perpetual Futures', marketData.perpFutures)}
       {renderMarketTable('Bitcoin Term Futures', marketData.termFutures)}
