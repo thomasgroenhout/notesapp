@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 const ExchangeDashboard = () => {
   // Sample historical data for the past 5 days
@@ -59,24 +58,6 @@ const ExchangeDashboard = () => {
       { exchange: 'Huobi Futures', bid: 69869.75, ask: 69875.25, bidSize: 14.765, askSize: 12.987, connected: false }
     ]
   });
-
-  // Time range state for charts
-  const [timeRange, setTimeRange] = useState('1d');
-
-  // Function to filter chart data based on time range
-  const getFilteredChartData = () => {
-    const now = new Date();
-    let hoursToShow;
-    
-    switch(timeRange) {
-      case '1d': hoursToShow = 24; break;
-      case '3d': hoursToShow = 72; break;
-      case '5d': hoursToShow = 120; break;
-      default: hoursToShow = 24;
-    }
-    
-    return historicalData.slice(-hoursToShow);
-  };
 
   // Function to simulate live data updates
   useEffect(() => {
@@ -268,46 +249,6 @@ const ExchangeDashboard = () => {
   };
 
   const bestOpportunity = findBestOpportunity();
-  const filteredChartData = getFilteredChartData();
-
-  const chartTimeRangeButtons = [
-    { label: '1D', value: '1d' },
-    { label: '3D', value: '3d' },
-    { label: '5D', value: '5d' }
-  ];
-
-  // Custom tooltip for price chart
-  const PriceTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white p-3 border border-gray-200 shadow-md">
-          <p className="text-sm">{payload[0].payload.displayTime}</p>
-          <p className="text-sm font-medium">
-            Spot: ${Number(payload[0].value).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-          </p>
-          <p className="text-sm font-medium">
-            Futures: ${Number(payload[1].value).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  // Custom tooltip for basis chart
-  const BasisTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white p-3 border border-gray-200 shadow-md">
-          <p className="text-sm">{payload[0].payload.displayTime}</p>
-          <p className="text-sm font-medium">
-            Basis: ${Number(payload[0].value).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
@@ -315,121 +256,6 @@ const ExchangeDashboard = () => {
         <h1 className="text-3xl font-bold">The Basis</h1>
         <div className="text-gray-600">
           Last Updated: {timestamp.toLocaleTimeString()}
-        </div>
-      </div>
-      
-      {/* Charts Section */}
-      <div className="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Spot BTC Price Chart */}
-        <div className="bg-white p-4 border border-gray-200 rounded shadow">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">Spot BTC Price</h2>
-            <div className="flex space-x-2">
-              {chartTimeRangeButtons.map(button => (
-                <button
-                  key={button.value}
-                  className={`px-3 py-1 text-sm rounded ${timeRange === button.value 
-                    ? 'bg-blue-500 text-white' 
-                    : 'bg-gray-200 text-gray-700'}`}
-                  onClick={() => setTimeRange(button.value)}
-                >
-                  {button.label}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={filteredChartData}
-                margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                <XAxis 
-                  dataKey="displayTime" 
-                  tick={{ fontSize: 10 }}
-                  interval={Math.floor(filteredChartData.length / 5)}
-                />
-                <YAxis 
-                  domain={['auto', 'auto']} 
-                  tick={{ fontSize: 10 }}
-                  tickFormatter={(value) => `$${value.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}`}
-                />
-                <Tooltip content={<PriceTooltip />} />
-                <Legend />
-                <Line 
-                  type="monotone" 
-                  dataKey="spotPrice" 
-                  name="Spot BTC" 
-                  stroke="#2563eb" 
-                  dot={false} 
-                  strokeWidth={2}
-                  activeDot={{ r: 6 }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="futuresPrice" 
-                  name="Term Futures" 
-                  stroke="#10b981" 
-                  dot={false} 
-                  strokeWidth={2} 
-                  activeDot={{ r: 6 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-        
-        {/* Basis Chart */}
-        <div className="bg-white p-4 border border-gray-200 rounded shadow">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">Spot-Futures Basis</h2>
-            <div className="flex space-x-2">
-              {chartTimeRangeButtons.map(button => (
-                <button
-                  key={button.value}
-                  className={`px-3 py-1 text-sm rounded ${timeRange === button.value 
-                    ? 'bg-blue-500 text-white' 
-                    : 'bg-gray-200 text-gray-700'}`}
-                  onClick={() => setTimeRange(button.value)}
-                >
-                  {button.label}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={filteredChartData}
-                margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                <XAxis 
-                  dataKey="displayTime" 
-                  tick={{ fontSize: 10 }}
-                  interval={Math.floor(filteredChartData.length / 5)}
-                />
-                <YAxis 
-                  domain={['auto', 'auto']} 
-                  tick={{ fontSize: 10 }}
-                  tickFormatter={(value) => `$${value.toLocaleString()}`}
-                />
-                <Tooltip content={<BasisTooltip />} />
-                <ReferenceLine y={0} stroke="#666" strokeDasharray="3 3" />
-                <Line 
-                  type="monotone" 
-                  dataKey="basis" 
-                  name="Basis" 
-                  stroke="#8b5cf6" 
-                  dot={false} 
-                  strokeWidth={2}
-                  activeDot={{ r: 6 }}
-                  isAnimationActive={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
         </div>
       </div>
       
