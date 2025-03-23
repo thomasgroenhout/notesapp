@@ -277,15 +277,17 @@ const ExchangeDashboard = () => {
   };
 
   const bestOpportunity = findBestOpportunity();
+  const marketData = [
+    { exchange: 'Binance', connected: true },
+    { exchange: 'Coinbase', connected: false },
+    { exchange: 'Kraken', connected: true },
+    { exchange: 'Bitfinex', connected: false },
+  ];
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">The Basis</h1>
-        <div className="text-gray-600">
-          Last Updated: {timestamp.toLocaleTimeString()}
-        </div>
-      </div>
+      <h1 className="text-3xl font-bold mb-6">The Basis</h1>
+      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div className="bg-white p-4 shadow rounded-lg">
           <h2 className="text-xl font-bold mb-2">Bitcoin Price (5 Days)</h2>
@@ -297,13 +299,26 @@ const ExchangeDashboard = () => {
         </div>
       </div>
       
-      {renderMarketTable('Bitcoin Spot Markets', marketData.spot)}
-      {renderMarketTable('Bitcoin Perpetual Futures', marketData.perpFutures)}
-      {renderMarketTable('Bitcoin Term Futures', marketData.termFutures)}
-      
-      <div className="mt-6 text-sm text-gray-500">
-        <p>Data updates every 3 seconds. All prices in USD.</p>
-        <p>This is simulated data for prototype purposes. Connect to exchange APIs for live data.</p>
+      <div className="bg-white p-4 shadow rounded-lg">
+        <h2 className="text-xl font-bold mb-2">Market Status</h2>
+        <table className="w-full border-collapse border border-gray-300">
+          <thead>
+            <tr className="bg-gray-100 border border-gray-300">
+              <th className="p-2 border border-gray-300 text-left">Exchange</th>
+              <th className="p-2 border border-gray-300 text-center">Connected</th>
+            </tr>
+          </thead>
+          <tbody>
+            {marketData.map((market, index) => (
+              <tr key={index} className="border border-gray-300">
+                <td className="p-2 border border-gray-300">{market.exchange}</td>
+                <td className="p-2 border border-gray-300 text-center">
+                  <span className={`inline-block w-4 h-4 rounded-full ${market.connected ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
