@@ -11,31 +11,56 @@ const ExchangeDashboard = () => {
     const startDate = new Date(now);
     startDate.setDate(now.getDate() - 5);
     
-    // Generate data points for each hour over the past 5 days
     for (let i = 0; i <= 120; i++) {
       const date = new Date(startDate);
       date.setHours(date.getHours() + i);
       
-      // Base price around $70,000 with some randomness
-      const basePrice = 82000 ;
-      const volatility = 2000; // Max price movement
+      const basePrice = 82000;
+      const volatility = 2000;
       const spotPrice = basePrice + (Math.random() - 0.5) * volatility;
-      
-      // Futures generally trade at a premium to spot
       const futuresPremium = 200 + (Math.random() - 0.3) * 300;
       const futuresPrice = spotPrice + futuresPremium;
       
       data.push({
         time: date.toISOString(),
         displayTime: `${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:00`,
-        spotPrice: spotPrice,
-        futuresPrice: futuresPrice,
-        basis: futuresPremium
+        spotPrice,
+        futuresPrice
       });
     }
     
     return data;
   });
+  
+  const bitcoinChartData = {
+    labels: historicalData.map(data => data.displayTime),
+    datasets: [
+      {
+        label: 'Bitcoin Spot Price',
+        data: historicalData.map(data => data.spotPrice),
+        borderColor: 'blue',
+        fill: false,
+      }
+    ]
+  };
+
+  const basisChartData = {
+    labels: historicalData.map(data => data.displayTime),
+    datasets: [
+      {
+        label: 'Bitcoin Spot Price',
+        data: historicalData.map(data => data.spotPrice),
+        borderColor: 'green',
+        fill: false,
+      },
+      {
+        label: 'Bitcoin Futures Price',
+        data: historicalData.map(data => data.futuresPrice),
+        borderColor: 'red',
+        fill: false,
+      }
+    ]
+  };
 
   // Sample data structure for current market data
   const [marketData, setMarketData] = useState({
