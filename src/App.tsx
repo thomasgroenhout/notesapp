@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Line } from 'react-chartjs-2';
+import 'chart.js/auto';
+
 
 const ExchangeDashboard = () => {
   // Sample historical data for the past 5 days
@@ -258,6 +261,16 @@ const ExchangeDashboard = () => {
           Last Updated: {timestamp.toLocaleTimeString()}
         </div>
       </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div className="bg-white p-4 shadow rounded-lg">
+          <h2 className="text-xl font-bold mb-2">Bitcoin Price (5 Days)</h2>
+          <reactChartjs2.Line data={bitcoinChartData} />
+        </div>
+        <div className="bg-white p-4 shadow rounded-lg">
+          <h2 className="text-xl font-bold mb-2">Bitcoin Spot vs Futures (5 Days)</h2>
+          <reactChartjs2.Line data={basisChartData} />
+        </div>
+      </div>
       
       {renderMarketTable('Bitcoin Spot Markets', marketData.spot)}
       {renderMarketTable('Bitcoin Perpetual Futures', marketData.perpFutures)}
@@ -272,3 +285,4 @@ const ExchangeDashboard = () => {
 };
 
 export default ExchangeDashboard;
+
