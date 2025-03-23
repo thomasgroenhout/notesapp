@@ -264,11 +264,11 @@ const ExchangeDashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div className="bg-white p-4 shadow rounded-lg">
           <h2 className="text-xl font-bold mb-2">Bitcoin Price (5 Days)</h2>
-          <reactChartjs2.Line data={bitcoinChartData} />
+          <Line data={bitcoinChartData} />
         </div>
         <div className="bg-white p-4 shadow rounded-lg">
           <h2 className="text-xl font-bold mb-2">Bitcoin Spot vs Futures (5 Days)</h2>
-          <reactChartjs2.Line data={basisChartData} />
+          <Line data={basisChartData} />
         </div>
       </div>
       
